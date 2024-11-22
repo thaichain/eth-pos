@@ -1,0 +1,96 @@
+services:
+
+  init-geth:
+    image: ghcr.io/thaichain/geth
+    command: >
+       --datadir=/execution-data init /config/genesis.json
+
+    volumes:
+      - ./data/execution-data:/execution-data
+      - ./config/metadata:/config
+
+  geth:
+    image: ghcr.io/thaichain/geth
+    depends_on:
+      - init-geth
+    command:
+      - --networkid=1460011
+      - --state.scheme=path
+      - --verbosity=3
+      - --datadir=/execution-data
+      - --nat=extip:${NODE_PUBLIC_IP}
+      - --http
+      - --http.addr=0.0.0.0
+      - --http.port=8545
+      - --http.vhosts=*
+      - --http.corsdomain=*
+      - --http.api=admin,engine,net,eth,web3,debug,txpool
+      - --ws
+      - --ws.addr=0.0.0.0
+      - --ws.port=8546
+      - --ws.api=admin,engine,net,eth,web3,debug,txpool
+      - --ws.origins=*
+      - --allow-insecure-unlock
+      - --authrpc.port=8551
+      - --authrpc.addr=0.0.0.0
+      - --authrpc.vhosts=*
+      - --authrpc.jwtsecret=/config/jwtsecret
+      - --syncmode=full
+      - --rpc.allow-unprotected-txs
+      - --nodiscover
+      - --maxpeers=1
+
+    volumes:
+      - ./data/execution-data:/execution-data
+      - ./config/metadata:/config
+    ports:
+      - "9545:8545"
+    restart: unless-stopped
+
+  beacon:
+    image: ethpandaops/lighthouse:pawan-electra-alpha7-b2b728d
+    command:
+      - lighthouse
+      - beacon_node
+      - --disable-peer-scoring
+      - --disable-packet-filter
+      - --enable-private-discovery
+      - --staking
+      - --http 
+      - --http-address=0.0.0.0
+      - --http-port=5052
+      - --validator-monitor-auto
+      - --http-allow-origin=*
+      - --listen-address=0.0.0.0
+      - --port=9000
+      - --target-peers=0
+      - --testnet-dir=/config
+      - --execution-endpoints=http://geth:8551
+      - --jwt-secrets=/config/jwtsecret
+      - --suggested-fee-recipient=${FEE_RECIPIENT}
+      - --allow-insecure-genesis-sync
+    volumes:
+      - ./data/consensus-data:/consensus-data
+      - ./config/metadata:/config
+    depends_on:
+      - geth
+    restart: unless-stopped
+
+  validator:
+    image: ethpandaops/lighthouse:pawan-electra-alpha7-b2b728d
+    command:
+      - lighthouse
+      - vc
+      - --debug-level=info
+      - --testnet-dir=/config
+      - --validators-dir=/validator-keys/keys
+      - --secrets-dir=/validator-keys/secrets
+      - --init-slashing-protection
+      - --beacon-nodes=http://beacon:5052
+      - --suggested-fee-recipient=${FEE_RECIPIENT}
+    volumes:
+      - ./config/metadata:/config
+      - ./vc/data:/validator-keys
+    depends_on:
+      - beacon
+    restart: unless-stopped
