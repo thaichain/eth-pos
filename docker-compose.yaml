@@ -52,6 +52,7 @@ services:
     command:
       - lighthouse
       - beacon_node
+      - --datadir=/consensus-data
       - --disable-peer-scoring
       - --disable-packet-filter
       - --enable-private-discovery
