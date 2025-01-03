@@ -14,7 +14,7 @@ services:
     depends_on:
       - init-geth
     command:
-      - --networkid=1460011
+       - --networkid=${CHAIN_ID}
       - --state.scheme=path
       - --verbosity=3
       - --datadir=/execution-data
