@@ -70,6 +70,7 @@ services:
       - --jwt-secrets=/config/jwtsecret
       - --suggested-fee-recipient=${FEE_RECIPIENT}
       - --allow-insecure-genesis-sync
+      - --enr-address=${NODE_PUBLIC_IP}
     volumes:
       - ./data/consensus-data:/consensus-data
       - ./config/metadata:/config
