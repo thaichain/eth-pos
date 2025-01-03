@@ -1,7 +1,7 @@
 services:
 
   init-geth:
-    image: ghcr.io/thaichain/geth
+    image: ethereum/client-go:latest
     command: >
        --datadir=/execution-data init /config/genesis.json
 
@@ -10,7 +10,7 @@ services:
       - ./config/metadata:/config
 
   geth:
-    image: ghcr.io/thaichain/geth
+    image: ethereum/client-go:latest
     depends_on:
       - init-geth
     command:
@@ -48,7 +48,7 @@ services:
     restart: unless-stopped
 
   beacon:
-    image: ethpandaops/lighthouse:pawan-electra-alpha7-b2b728d
+    image: sigp/lighthouse:latest-unstable
     command:
       - lighthouse
       - beacon_node
@@ -77,7 +77,7 @@ services:
     restart: unless-stopped
 
   validator:
-    image: ethpandaops/lighthouse:pawan-electra-alpha7-b2b728d
+    image: sigp/lighthouse:latest-unstable
     command:
       - lighthouse
       - vc

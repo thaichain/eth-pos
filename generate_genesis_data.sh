@@ -53,7 +53,7 @@ echo "FEE_RECIPIENT="$WITHDRAWAL_ADDRESS >> .env
 docker run --rm -it \
 -v $PWD/config:/data \
 -v $PWD/values.env:/config/values.env \
-ethpandaops/ethereum-genesis-generator:3.4.2 all
+ethpandaops/ethereum-genesis-generator:3.2.1 all
 
 
 rm -rf vc
@@ -67,8 +67,3 @@ docker run -it --rm -v $PWD/vc:/vc ghcr.io/thaichain/eth2-val-tools keystores \
 --source-max $NUMBER_OF_VALIDATORS
 
 rm -rf vc/data/lodestar-secrets vc/data/nimbus-keys vc/data/prysm vc/data/teku-keys vc/data/teku-secrets
-
-
-
-
-
