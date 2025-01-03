@@ -50,10 +50,12 @@ esac
 
 source values.env
 echo "FEE_RECIPIENT="$WITHDRAWAL_ADDRESS >> .env
+echo "CHAIN_ID="$CHAIN_ID >> .env
+
 docker run --rm -it \
 -v $PWD/config:/data \
 -v $PWD/values.env:/config/values.env \
-ethpandaops/ethereum-genesis-generator:3.4.2 all
+ghcr.io/thaichain/ethereum-genesis-generator:3.4.2 all
 
 
 rm -rf vc
