@@ -28,7 +28,7 @@ else
   exit 8
 fi
 echo "NODE_PUBLIC_IP="$PUBLIC_IP > .env
-echo "FEE_RECIPIENT="$WITHDRAWAL_ADDRESS >> .env
+
 rm -rf config
 file_path="values.env"
 current_utc_timestamp=$(date -u +%s)
@@ -49,7 +49,7 @@ case "${OS}" in
 esac
 
 source values.env
-
+echo "FEE_RECIPIENT="$WITHDRAWAL_ADDRESS >> .env
 docker run --rm -it \
 -v $PWD/config:/data \
 -v $PWD/values.env:/config/values.env \
