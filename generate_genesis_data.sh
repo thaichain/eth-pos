@@ -55,7 +55,7 @@ echo "CHAIN_ID="$CHAIN_ID >> .env
 docker run --rm -it \
 -v $PWD/config:/data \
 -v $PWD/values.env:/config/values.env \
-ghcr.io/thaichain/ethereum-genesis-generator:3.4.2 all
+ghcr.io/thaichain/ethereum-genesis-generator all
 
 
 rm -rf vc
