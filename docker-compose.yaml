@@ -1,7 +1,7 @@
 services:
 
   init-geth:
-    image: ghcr.io/thaichain/geth
+    image: ethereum/client-go:latest
     command: >
        --datadir=/execution-data init /config/genesis.json
 
@@ -10,11 +10,11 @@ services:
       - ./config/metadata:/config
 
   geth:
-    image: ghcr.io/thaichain/geth
+    image: ethereum/client-go:latest
     depends_on:
       - init-geth
     command:
-       - --networkid=${CHAIN_ID}
+      - --networkid=1460011
       - --state.scheme=path
       - --verbosity=3
       - --datadir=/execution-data
@@ -48,7 +48,7 @@ services:
     restart: unless-stopped
 
   beacon:
-    image: ethpandaops/lighthouse:pawan-electra-alpha7-b2b728d
+    image: sigp/lighthouse:latest-unstable
     command:
       - lighthouse
       - beacon_node
@@ -70,7 +70,6 @@ services:
       - --jwt-secrets=/config/jwtsecret
       - --suggested-fee-recipient=${FEE_RECIPIENT}
       - --allow-insecure-genesis-sync
-      - --enr-address=${NODE_PUBLIC_IP}
     volumes:
       - ./data/consensus-data:/consensus-data
       - ./config/metadata:/config
@@ -79,7 +78,7 @@ services:
     restart: unless-stopped
 
   validator:
-    image: ethpandaops/lighthouse:pawan-electra-alpha7-b2b728d
+    image: sigp/lighthouse:latest-unstable
     command:
       - lighthouse
       - vc
